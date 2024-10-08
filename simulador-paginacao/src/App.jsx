@@ -12,9 +12,18 @@ const App = () => {
             <Header />
             <main>
                 <SimulationForm />
-                <PageTableSizeChart />
-                <InternalFragmentationChart />
-                <Summary />
+                <div className="charts-summary-container">
+                  <div className="chart-container">
+                    <PageTableSizeChart />
+                  </div>
+                  <div className="chart-container">
+                    <InternalFragmentationChart />
+                  </div>
+                  <div className="summary-container">
+                    <Summary />
+                  </div>
+                </div>
+
             </main>
             <Footer />
         </div>

@@ -53,10 +53,32 @@ const GlobalStyles = createGlobalStyle`
         background-color: #2ecc71;
     }
 
-    svg {
-        display: block;
-        margin: 20px auto;
+    .charts-summary-container {
+        display: flex;
+        justify-content: space-between;  /* Distribui os gráficos e o resumo com espaço entre eles */
+        align-items: flex-start;         /* Alinha os itens no início */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Estilo dos gráficos */
+    .chart-container {
+        width: 45%;                     /* Define largura para que os gráficos caibam na mesma linha */
+        margin: 10px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Estilo do resumo */
+    .summary-container {
+        width: 45%;                     /* Define largura para que o resumo caiba na mesma linha */
+        margin: 10px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
     }
 `;
-
 export default GlobalStyles;
