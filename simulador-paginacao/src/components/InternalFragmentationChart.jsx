@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useSelector } from 'react-redux';
+import { Tooltip as ReactTooltip } from 'react-tooltip'; // Atualização na importação
+import 'react-tooltip/dist/react-tooltip.css'; // Importa o CSS da biblioteca
 
 const InternalFragmentationChart = () => {
     const svgRef = useRef();
@@ -40,12 +42,17 @@ const InternalFragmentationChart = () => {
             .attr('y', y(internalFragmentation))
             .attr('width', x.bandwidth())
             .attr('height', height - margin.bottom - y(internalFragmentation))
-            .attr('fill', '#e74c3c');
+            .attr('fill', '#e74c3c')
+            .attr('data-tooltip-id', 'fragmentationTooltip')
+            .attr('data-tooltip-content', `Fragmentação: ${internalFragmentation} bytes`);
 
     }, [internalFragmentation]);
 
     return (
-        <svg ref={svgRef} width={400} height={200}></svg>
+        <>
+            <svg ref={svgRef} width={400} height={200}></svg>
+            <ReactTooltip id="fragmentationTooltip" />
+        </>
     );
 };
 

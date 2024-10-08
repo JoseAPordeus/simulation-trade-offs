@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { useSelector } from 'react-redux';
+import { Tooltip as ReactTooltip } from 'react-tooltip'; // Atualização na importação
+import 'react-tooltip/dist/react-tooltip.css'; // Importa o CSS da biblioteca
 
 const PageTableSizeChart = () => {
     const svgRef = useRef();
@@ -40,12 +42,17 @@ const PageTableSizeChart = () => {
             .attr('y', y(pageTableSize))
             .attr('width', x.bandwidth())
             .attr('height', height - margin.bottom - y(pageTableSize))
-            .attr('fill', '#3498db');
+            .attr('fill', '#3498db')
+            .attr('data-tooltip-id', 'pageSizeTooltip')
+            .attr('data-tooltip-content', `Tamanho: ${pageTableSize} bytes`);
 
     }, [pageTableSize]);
 
     return (
-        <svg ref={svgRef} width={400} height={200}></svg>
+        <>
+            <svg ref={svgRef} width={400} height={200}></svg>
+            <ReactTooltip id="pageSizeTooltip" />
+        </>
     );
 };
 
