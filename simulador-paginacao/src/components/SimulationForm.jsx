@@ -5,6 +5,7 @@ import { runSimulation } from '../store/actions';
 import SimulationHistory from './SimulationHistory'; 
 import { saveAs } from 'file-saver';
 
+// Estilizações dos componentes
 const Form = styled.form`
     display: flex;
     flex-direction: column;
@@ -35,22 +36,54 @@ const Button = styled.button`
     }
 `;
 
+const ExportButton = styled(Button)`
+    background-color: #3498db;
+    &:hover {
+        background-color: #2980b9;
+    }
+`;
+
+const ClearButton = styled(Button)`
+    background-color: #e74c3c;
+    &:hover {
+        background-color: #c0392b;
+    }
+`;
+
+// Novo Container para centralizar tudo
+const CenteredContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Espaço entre os botões */
+    margin-top: 20px;
+`;
+
 const SimulationForm = () => {
     const dispatch = useDispatch();
     const [pageSize, setPageSize] = useState(4096);
     const [numPages, setNumPages] = useState(1024);
     const [memorySize, setMemorySize] = useState(4194304);
     const [history, setHistory] = useState([]); // Estado para o histórico
-    const [result, setResult] = useState(null); // Estado para armazenar resultado atual
+    const [result, setResult] = useState(null); // Estado para armazenar o resultado atual
 
+    // Função para enviar os dados e rodar a simulação
     const handleSubmit = (e) => {
         e.preventDefault();
         const simulationResult = { pageSize, numPages, memorySize }; // Objeto com os resultados
-        setResult(simulationResult); // Atualiza o resultado atual
+        setResult(simulationResult); // Armazena o resultado atual
         setHistory([...history, simulationResult]); // Adiciona ao histórico
         dispatch(runSimulation(simulationResult)); // Executa a simulação
     };
 
+    // Função para exportar os dados em formato CSV
     const handleExportCSV = () => {
         // Lógica para exportar em CSV
         const csvData = history.map(({ pageSize, numPages, memorySize }) => ({
@@ -59,15 +92,22 @@ const SimulationForm = () => {
             memorySize
         }));
 
+        // Conteúdo do CSV
         const csvContent = [
             ['Tamanho da Página', 'Número de Páginas', 'Tamanho da Memória'], // Cabeçalhos
             ...csvData.map(({ pageSize, numPages, memorySize }) => [pageSize, numPages, memorySize])
         ]
-            .map(e => e.join(","))
-            .join("\n");
+            .map(e => e.join(",")) // Formata cada linha como CSV
+            .join("\n"); // Junta as linhas com quebra de linha
 
+        // Cria o arquivo Blob e inicia o download
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         saveAs(blob, 'historico_simulacoes.csv'); // Nome do arquivo
+    };
+
+    // Função para limpar o histórico de simulações
+    const handleClearHistory = () => {
+        setHistory([]); // Limpa o histórico
     };
 
     return (
@@ -107,10 +147,22 @@ const SimulationForm = () => {
 
                 <Button type="submit">Simular</Button>
             </Form>
-            
-            <Button onClick={handleExportCSV}>Exportar Histórico como CSV</Button> {/* Botão de exportação */}
 
-            <SimulationHistory history={history} /> {/* Exibe o histórico */}
+            {/* Centraliza o histórico e os botões */}
+            <CenteredContainer>
+                <ButtonContainer>
+                    <ExportButton onClick={handleExportCSV}>
+                        Exportar Histórico como CSV
+                    </ExportButton>
+
+                    <ClearButton onClick={handleClearHistory}>
+                        Limpar Histórico
+                    </ClearButton>
+                </ButtonContainer>
+
+                {/* Exibe o histórico de simulações */}
+                <SimulationHistory history={history} />
+            </CenteredContainer>
         </div>
     );
 };
