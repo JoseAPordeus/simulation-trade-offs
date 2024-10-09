@@ -4,6 +4,16 @@ import { useSelector } from 'react-redux';
 import { Tooltip as ReactTooltip } from 'react-tooltip'; // Atualização na importação
 import 'react-tooltip/dist/react-tooltip.css'; // Importa o CSS da biblioteca
 
+// Função para formatar números grandes
+const formatNumber = (num) => {
+    if (num >= 1e6) {
+        return (num / 1e6).toFixed(1) + 'M'; // Formato para milhões
+    } else if (num >= 1e3) {
+        return (num / 1e3).toFixed(1) + 'K'; // Formato para milhares
+    }
+    return num.toString(); // Retorna o número como string se for pequeno
+};
+
 const InternalFragmentationChart = () => {
     const svgRef = useRef();
     const internalFragmentation = useSelector((state) => state.internalFragmentation);
@@ -14,7 +24,7 @@ const InternalFragmentationChart = () => {
         const height = 200;
         const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
-        svg.selectAll('*').remove();
+        svg.selectAll('*').remove(); // Limpa o gráfico anterior
 
         const x = d3.scaleBand()
             .domain(['Fragmentação Interna'])
@@ -22,7 +32,7 @@ const InternalFragmentationChart = () => {
             .padding(0.1);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max([internalFragmentation, 1000])])
+            .domain([0, d3.max([internalFragmentation, 2000000])]) // Ajusta o valor máximo do domínio
             .nice()
             .range([height - margin.bottom, margin.top]);
 
@@ -32,11 +42,13 @@ const InternalFragmentationChart = () => {
 
         const yAxis = (g) => g
             .attr('transform', `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y));
+            .call(d3.axisLeft(y)
+                .tickFormat(formatNumber)); // Formatação dos rótulos do eixo Y
 
         svg.append('g').call(xAxis);
         svg.append('g').call(yAxis);
 
+        // Adiciona a barra do gráfico para Fragmentação Interna
         svg.append('rect')
             .attr('x', x('Fragmentação Interna'))
             .attr('y', y(internalFragmentation))
@@ -44,7 +56,7 @@ const InternalFragmentationChart = () => {
             .attr('height', height - margin.bottom - y(internalFragmentation))
             .attr('fill', '#e74c3c')
             .attr('data-tooltip-id', 'fragmentationTooltip')
-            .attr('data-tooltip-content', `Fragmentação: ${internalFragmentation} bytes`);
+            .attr('data-tooltip-content', `Fragmentação: ${formatNumber(internalFragmentation)} bytes`); // Formatação do valor
 
     }, [internalFragmentation]);
 

@@ -37,9 +37,9 @@ const Button = styled.button`
 `;
 
 const ExportButton = styled(Button)`
-    background-color: #3498db;
+    background-color: #27ae60;
     &:hover {
-        background-color: #2980b9;
+        background-color: #2ecc71;
     }
 `;
 
