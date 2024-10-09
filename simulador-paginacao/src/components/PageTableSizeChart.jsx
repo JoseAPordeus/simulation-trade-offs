@@ -14,7 +14,7 @@ const PageTableSizeChart = () => {
         const height = 200;
         const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
-        svg.selectAll('*').remove();
+        svg.selectAll('*').remove(); // Limpa o gráfico anterior
 
         const x = d3.scaleBand()
             .domain(['Tamanho da Tabela de Páginas'])
@@ -37,14 +37,28 @@ const PageTableSizeChart = () => {
         svg.append('g').call(xAxis);
         svg.append('g').call(yAxis);
 
-        svg.append('rect')
-            .attr('x', x('Tamanho da Tabela de Páginas'))
-            .attr('y', y(pageTableSize))
-            .attr('width', x.bandwidth())
-            .attr('height', height - margin.bottom - y(pageTableSize))
-            .attr('fill', '#3498db')
-            .attr('data-tooltip-id', 'pageSizeTooltip')
-            .attr('data-tooltip-content', `Tamanho: ${pageTableSize} bytes`);
+        // Adiciona a barra do gráfico para Tamanho da Tabela de Páginas com animação
+        svg.selectAll('rect')
+            .data([pageTableSize])
+            .join(
+                enter => enter.append('rect')
+                    .attr('x', x('Tamanho da Tabela de Páginas'))
+                    .attr('y', y(0))  // Começa no ponto 0
+                    .attr('width', x.bandwidth())
+                    .attr('height', 0)  // Altura inicial 0
+                    .attr('fill', '#3498db')
+                    .attr('data-tooltip-id', 'pageSizeTooltip')
+                    .attr('data-tooltip-content', `Tamanho: ${pageTableSize} bytes`)
+                    .transition()  // Transição de entrada
+                    .duration(1000)  // Duração de 1 segundo
+                    .attr('y', y(pageTableSize))  // Anima a posição vertical
+                    .attr('height', height - margin.bottom - y(pageTableSize)),  // Anima a altura,
+                update => update
+                    .transition()  // Transição para atualizações
+                    .duration(1000)
+                    .attr('y', y(pageTableSize))
+                    .attr('height', height - margin.bottom - y(pageTableSize))
+            );
 
     }, [pageTableSize]);
 

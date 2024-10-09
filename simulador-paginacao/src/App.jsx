@@ -5,6 +5,8 @@ import SimulationForm from './components/SimulationForm';
 import PageTableSizeChart from './components/PageTableSizeChart';
 import InternalFragmentationChart from './components/InternalFragmentationChart';
 import Summary from './components/Summary';
+import ExplanationSection from './components/ExplanationSection';
+import LearnMoreSection from './components/LearnMoreSection';
 
 const App = () => {
     return (
@@ -23,7 +25,8 @@ const App = () => {
                     <Summary />
                   </div>
                 </div>
-
+                <ExplanationSection />
+                <LearnMoreSection />
             </main>
             <Footer />
         </div>

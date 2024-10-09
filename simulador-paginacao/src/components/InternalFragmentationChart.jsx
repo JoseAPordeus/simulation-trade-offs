@@ -48,15 +48,28 @@ const InternalFragmentationChart = () => {
         svg.append('g').call(xAxis);
         svg.append('g').call(yAxis);
 
-        // Adiciona a barra do gráfico para Fragmentação Interna
-        svg.append('rect')
-            .attr('x', x('Fragmentação Interna'))
-            .attr('y', y(internalFragmentation))
-            .attr('width', x.bandwidth())
-            .attr('height', height - margin.bottom - y(internalFragmentation))
-            .attr('fill', '#e74c3c')
-            .attr('data-tooltip-id', 'fragmentationTooltip')
-            .attr('data-tooltip-content', `Fragmentação: ${formatNumber(internalFragmentation)} bytes`); // Formatação do valor
+        // Adiciona a barra do gráfico para Fragmentação Interna com animação
+        svg.selectAll('rect')
+            .data([internalFragmentation])
+            .join(
+                enter => enter.append('rect')
+                    .attr('x', x('Fragmentação Interna'))
+                    .attr('y', y(0))  // Começa no ponto 0
+                    .attr('width', x.bandwidth())
+                    .attr('height', 0)  // Altura inicial 0
+                    .attr('fill', '#e74c3c')
+                    .attr('data-tooltip-id', 'fragmentationTooltip')
+                    .attr('data-tooltip-content', `Fragmentação: ${formatNumber(internalFragmentation)} bytes`)
+                    .transition()  // Transição de entrada
+                    .duration(1000)  // Duração de 1 segundo
+                    .attr('y', y(internalFragmentation))  // Anima a posição vertical
+                    .attr('height', height - margin.bottom - y(internalFragmentation)),  // Anima a altura,
+                update => update
+                    .transition()  // Transição para atualizações
+                    .duration(1000)
+                    .attr('y', y(internalFragmentation))
+                    .attr('height', height - margin.bottom - y(internalFragmentation))
+            );
 
     }, [internalFragmentation]);
 
